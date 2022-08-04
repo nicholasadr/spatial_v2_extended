@@ -39,10 +39,13 @@ for i = model.NB:-1:1
 end
 
 % pad zeros and concatenate W cells into matrix
-for i = 2:size(W,1) 
-    for j = 1:(i-1)
-        W{i,j} = zeros( size(W{i,i},1), size(W{j,j},2) );
+for i = 1:size(W,1) 
+    for j = 1:size(W,2)
+        if size(W{i,j},1) == 0
+            W{i,j} = zeros( size(W{i,i},1), size(W{j,j},2) );
+        end
     end
 end
 W = cell2mat(W);
+
 
