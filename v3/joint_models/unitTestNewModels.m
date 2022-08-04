@@ -222,6 +222,18 @@ checkValue('Lambda_inv', F_spatial'*Lambda_inv*F_spatial,  lambda_inv_entry)
 checkValue('qdd_test', qdd,  qdd2)
 checkValue('invHFactor', sub*(D\(sub')), inv(H) ); 
 
+op_sp_xforms = {};
+J = [];
+for i = 1:model.NB
+    op_sp_xforms{i} = rand( randi(6*model.joint{i}.bodies) , 6*model.joint{i}.bodies);
+    Ji = BodyJacobian(model,q,i, op_sp_xforms{i});
+    J = [J ; Ji];
+end
+
+Lambda_inv = J*(H\J');
+Lambda_inv_2 =  OpSpInertiaInv(model,q, op_sp_xforms);
+
+checkValue('efpa Lambda inv', Lambda_inv , Lambda_inv_2 ); 
 
 
 function checkValue(name, v1, v2, tolerance)
