@@ -1,0 +1,32 @@
+Mass properties of ASSY_Shin_2
+     Configuration: Default
+     Coordinate system: Knee
+
+Mass = 307.18 grams
+
+Volume = 113770.22 cubic millimeters
+
+Surface area = 86179.33  square millimeters
+
+Center of mass: ( millimeters )
+	X = 4.74
+	Y = -0.33
+	Z = -104.31
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.00,  0.00,  1.00)   	Px = 141417.36
+	 Iy = (-0.06,  1.00,  0.00)   	Py = 2020904.53
+	 Iz = (-1.00, -0.06,  0.00)   	Pz = 2023794.60
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system. (Using positive tensor notation.)
+	Lxx = 2023784.13	Lxy = -168.50	Lxz = -967.72
+	Lyx = -168.50	Lyy = 2020912.65	Lyz = -1866.54
+	Lzx = -967.72	Lzy = -1866.54	Lzz = 141419.71
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system. (Using positive tensor notation.)
+	Ixx = 5366409.09	Ixy = -652.69	Ixz = -152928.02
+	Iyx = -652.69	Iyy = 5370412.06	Iyz = 8784.06
+	Izx = -152928.02	Izy = 8784.06	Izz = 148362.04
