@@ -1,0 +1,32 @@
+Mass properties of ASSY_Hip_Clamp_rev2_RFQ_v1
+     Configuration: Default
+     Coordinate system: Hip Clamp
+
+Mass = 1328.88 grams
+
+Volume = 306322.84 cubic millimeters
+
+Surface area = 198925.37  square millimeters
+
+Center of mass: ( millimeters )
+	X = -1
+	Y = 0
+	Z = -6.92
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.24,  0,  0.97)   	Px = 2676313.26
+	 Iy = (-0.97,  0.01,  0.24)   	Py = 3139959.27
+	 Iz = (-0.01, -1,  0)   	Pz = 3227418.67
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system. (Using positive tensor notation.)
+	Lxx = 3113838.43	Lxy = -1139.2	Lxz = 106932.09
+	Lyx = -1139.2	Lyy = 3227404.87	Lyz = -67.34
+	Lzx = 106932.09	Lzy = -67.34	Lzz = 2702447.91
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system. (Using positive tensor notation.)
+	Ixx = 3177539.24	Ixy = 1140.57	Ixz = 116124.12
+	Iyx = 1140.57	Iyy = 3292432.09	Iyz = 76.83
+	Izx = 116124.12	Izy = 76.83	Izz = 2703774.32

@@ -17,6 +17,15 @@ else
 end
 
 switch code
+    case '-Rx'
+        Xj = rotx(q);
+        S = [-1;0;0;0;0;0];
+    case '-Ry'				% revolute Y axis
+        Xj = roty(-q);
+        S = [0;-1;0;0;0;0];
+    case '-Rz'			% revolute Z axis
+        Xj = rotz(-q);
+        S = [0;0;-1;0;0;0];
   case 'Rx'				% revolute X axis
     Xj = rotx(q);
     S = [1;0;0;0;0;0];

@@ -1,0 +1,32 @@
+Mass properties of ASSY_Thigh
+     Configuration: Default
+     Coordinate system: Hip Pitch
+
+Mass = 1542.39 grams
+
+Volume = 382495.35 cubic millimeters
+
+Surface area = 259054.70  square millimeters
+
+Center of mass: ( millimeters )
+	X = 3.01
+	Y = -0.06
+	Z = -32.25
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.07,  0.00,  1.00)   	Px = 2706797.77
+	 Iy = ( 0.00,  1.00,  0.00)   	Py = 8038759.60
+	 Iz = (-1.00,  0.00, -0.07)   	Pz = 8719757.01
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system. (Using positive tensor notation.)
+	Lxx = 8693950.98	Lxy = -1815.67	Lxz = -393052.75
+	Lyx = -1815.67	Lyy = 8038747.91	Lyz = 8539.06
+	Lzx = -393052.75	Lzy = 8539.06	Lzz = 2732615.49
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system. (Using positive tensor notation.)
+	Ixx = 10298424.74	Ixy = -2072.43	Ixz = -542818.06
+	Iyx = -2072.43	Iyy = 9657196.43	Iyz = 11289.71
+	Izx = -542818.06	Izy = 11289.71	Izz = 2746599.69

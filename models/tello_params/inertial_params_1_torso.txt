@@ -1,0 +1,37 @@
+Mass properties of ASSY_TORSO_BOX_v1
+     Configuration: Default
+     Coordinate system: Torso
+
+Mass = 2300.7727 grams
+
+Volume = 1097559.7635 cubic millimeters
+
+Surface area = 805242.9743  square millimeters
+
+Center of mass: ( millimeters )
+	X = 7.2948
+	Y = -1.3082
+	Z = -2.3468
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.0003, -0.9999,  0.0132)   	Px = 14023067.4307
+	 Iy = (-0.0723,  0.0132,  0.9973)   	Py = 28973977.9928
+	 Iz = (-0.9974, -0.0006, -0.0723)   	Pz = 36622143.3833
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system. (Using positive tensor notation.)
+	Lxx = 36582159.4657	Lxy = 505.2211	Lxz = -551584.0176
+	Lyx = 505.2211	Lyy = 14025679.4059	Lyz = -197759.2967
+	Lzx = -551584.0176	Lzy = -197759.2967	Lzz = 29011349.9353
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system. (Using positive tensor notation.)
+	Ixx = 36598768.7340	Ixy = -21451.1046	Ixz = -590972.5444
+	Iyx = -21451.1046	Iyy = 14160785.0251	Iyz = -190695.6661
+	Izx = -590972.5444	Izy = -190695.6661	Izz = 29137721.2380
+
+One or more components have overridden mass properties:
+	Tello_Power_PCB_v1<1><Default>
+	UpX_port_adapter_v1<1><Default>
+	upboard_v1<2><Default>

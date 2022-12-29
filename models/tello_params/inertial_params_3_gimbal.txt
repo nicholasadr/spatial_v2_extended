@@ -1,0 +1,32 @@
+Mass properties of ASSY_Hip_Gimbal_RFQ_v1
+     Configuration: Default
+     Coordinate system: Gimbal
+
+Mass = 443.25 grams
+
+Volume = 126388.63 cubic millimeters
+
+Surface area = 80299.22  square millimeters
+
+Center of mass: ( millimeters )
+	X = -2.67
+	Y = 0.00
+	Z = 25.81
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.00,  1.00,  0.00)   	Px = 1393023.46
+	 Iy = (-0.26,  0.00,  0.97)   	Py = 1479990.20
+	 Iz = ( 0.97,  0.00,  0.26)   	Pz = 1537554.06
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system. (Using positive tensor notation.)
+	Lxx = 1533610.41	Lxy = 0.32	Lxz = -14541.64
+	Lyx = 0.32	Lyy = 1393023.46	Lyz = 3.60
+	Lzx = -14541.64	Lzy = 3.60	Lzz = 1483933.85
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system. (Using positive tensor notation.)
+	Ixx = 1828848.82	Ixy = 0.36	Ixz = -45068.27
+	Iyx = 0.36	Iyy = 1691418.22	Iyz = 3.25
+	Izx = -45068.27	Izy = 3.25	Izz = 1487090.20

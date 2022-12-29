@@ -1,0 +1,32 @@
+Mass properties of ASSY_Ankle
+     Configuration: Default
+     Coordinate system: ankle
+
+Mass = 102.52 grams
+
+Volume = 55926.60 cubic millimeters
+
+Surface area = 17754.06  square millimeters
+
+Center of mass: ( millimeters )
+	X = 4.18
+	Y = -0.01
+	Z = -25.08
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.99,  0.00, -0.11)   	Px = 28699.95
+	 Iy = ( 0.11,  0.00, -0.99)   	Py = 89120.65
+	 Iz = ( 0.00, -1.00,  0.00)   	Pz = 111072.99
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system. (Using positive tensor notation.)
+	Lxx = 29495.46	Lxy = -14.53	Lxz = 6887.09
+	Lyx = -14.53	Lyy = 111072.99	Lyz = -5.67
+	Lzx = 6887.09	Lzy = -5.67	Lzz = 88325.14
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system. (Using positive tensor notation.)
+	Ixx = 93955.34	Ixy = -16.71	Ixz = -3849.97
+	Iyx = -16.71	Iyy = 177321.33	Iyz = 7.44
+	Izx = -3849.97	Izy = 7.44	Izz = 90113.62
