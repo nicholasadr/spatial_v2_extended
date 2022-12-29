@@ -1,11 +1,20 @@
-function robot = tello_w_rotors_wo_parallel
+function robot = tello_w_rotors_w_parallel
+% WORK IN PROGRESS
+% WORK IN PROGRESS
+% WORK IN PROGRESS
+% WORK IN PROGRESS
+
+
+
 
 % NOTE 1: Featherstone v2 style rigid body model for tello model including 
-% torso, both legs and rotors. BUT this model does not contain parts that
-% complete parallel actuation such as 4-bar linkages or parallelogram.
+% torso, both legs, rotors AND links that complete parallel actuation 
+% such as 4-bar linkages or parallelogram.
+
 % NOTE 2: Inertial parameters are stored in 
 % 'inertial_params_X_partname.txt'. These text files are manually generated 
 % from solidworks. 
+
 % NOTE 3: Following cases are added to jcalc
 %     case '-Rx'
 %         Xj = rotx(q);
@@ -20,9 +29,9 @@ function robot = tello_w_rotors_wo_parallel
 % NOTE4: body ordering: (world: 0)
 % torso:        1
 % left limb:    2, 3, 4, 5, 6
+
 % left rotors:  7, 8, 9, 10, 11
-% right limb:   12, 13, 14, 15, 16
-% right rotors: 17, 18, 19, 20, 21
+
 
 % number of bodies
 robot.NB = 1+5+5+5+5; 
