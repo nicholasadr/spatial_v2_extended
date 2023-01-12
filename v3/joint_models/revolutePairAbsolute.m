@@ -5,14 +5,13 @@ classdef revolutePairAbsolute
         nv = 2
         nq = 2
         axis
-        gearRatio
         XtreeInternal
         output_body = 2
         bodies = 2
     end
     
     methods        
-        function [Xup, S, Sd, v] = kinematics(obj, Xtree, q, qdot, vp)
+        function [Xup, S, Sd, v,derivs] = kinematics(obj, Xtree, q, qdot, vp)
             % Generalized coordaintes are the absolute angles - o/w same as
             % two revolutes.
             
@@ -39,8 +38,25 @@ classdef revolutePairAbsolute
                 
                 Sd = [S1d zeros(6,1) ; X21*S1d-S2d S2d];
             end
+            if nargout > 4
+                % Sdot (of the open dot variety) lower left corner =
+                %                           -crm(S2)*X21*S1*(qdot2 - qdot1)
+                % So lower part of Sdot*qdot = 
+                %                   -crm(S2)*X21*S1*(qdot2 - qdot1)*qdot1
+                
+                derivs.Sdotqd_q = zeros(12,2);
+                derivs.Sdotqd_qd= zeros(12,2);
+                
+                dX21_dq1 = crm(S2)*X21;
+                dX21_dq2 = -crm(S2)*X21;
+                
+                derivs.Sdotqd_qd(7:12,1) =  -crm(S2)*X21*S1*(qdot(2) -2*qdot(1));
+                derivs.Sdotqd_qd(7:12,2) =  -crm(S2)*X21*S1*(qdot(1)           );
+                
+                derivs.Sdotqd_q(7:12,1) =  -crm(S2)*dX21_dq1*S1*(qdot(2) - qdot(1))*qdot(1);
+                derivs.Sdotqd_q(7:12,2) =  -crm(S2)*dX21_dq2*S1*(qdot(2) - qdot(1))*qdot(1);
+            end 
         end
-        
     end
 end
 

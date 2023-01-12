@@ -16,7 +16,7 @@ classdef revolutePairAbsoluteWithRotors
     end
     
     methods        
-        function [Xup, S, Sd, v] = kinematics(obj, Xtree, q, qdot, vp)
+        function [Xup, S, Sd, v, derivs] = kinematics(obj, Xtree, q, qdot, vp)
             % Assuming that the generalized coordaintes are the realtive
             % angles. All the challenge comes from rotors.
             
@@ -70,6 +70,21 @@ classdef revolutePairAbsoluteWithRotors
                         X21*S1d       S2d
                       ];              
             end
+            if nargout > 4
+                % Sdot (open dot) lower left corner = 
+                %   -S2*qd2 x X21 * S1
+                % Sdot*qd (lower part) = 
+                %  -S2 x X21 * S1 * qd1*qd2
+                
+                dX21_dq2 = -crm(S2)*X21;
+                
+                derivs.Sdotqd_q  = zeros(24,2);
+                derivs.Sdotqd_qd = zeros(24,2);
+                
+                derivs.Sdotqd_qd(19:24,1) = -crm(S2)* X21 * S1 * qdot(2);
+                derivs.Sdotqd_qd(19:24,2) = -crm(S2)* X21 * S1 * qdot(1); 
+                derivs.Sdotqd_q(19:24,2)  = -crm(S2) * dX21_dq2 * S1 * qdot(1)*qdot(2);
+            end    
         end
         
     end

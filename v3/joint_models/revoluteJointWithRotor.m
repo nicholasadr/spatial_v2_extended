@@ -12,7 +12,7 @@ classdef revoluteJointWithRotor
     end
     
     methods        
-        function [Xup, S, Sd, v] = kinematics(obj, Xtree, q, qdot, vp)
+        function [Xup, S, Sd, v, derivs] = kinematics(obj, Xtree, q, qdot, vp)
             [XJ_link , S_link ] = jcalc( ['R' obj.jointAxis], q);
             [XJ_rotor, S_rotor ] = jcalc( ['R' obj.rotorAxis], q*obj.gearRatio);
             
@@ -30,7 +30,13 @@ classdef revoluteJointWithRotor
             if nargout > 2
                 v  = Xup*vp + S*qdot;
                 Sd = crm(v)*S;
-            end 
+            end
+            
+            if nargout > 4
+                derivs.Sdotqd_q = zeros(12,1);
+                derivs.Sdotqd_qd= zeros(12,1);
+            end
+            
         end
         
     end

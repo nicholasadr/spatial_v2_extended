@@ -67,6 +67,7 @@ for i = 2:model.NB
 %     a(end+1 : end+10) = inertiaMatToVec(model.I{i}(7:12,7:12));
 end
 
+%% Set up
 model = model.postProcessModel();
 
 q = rand(model.NQ,1); % using q's for the joints as relative link angles
@@ -234,6 +235,24 @@ Lambda_inv = J*(H\J');
 Lambda_inv_2 =  OpSpInertiaInv(model,q, op_sp_xforms);
 
 checkValue('efpa Lambda inv', Lambda_inv , Lambda_inv_2 ); 
+
+
+
+%% 
+
+[dtau_dq dtau_dqd] = ID_derivatives(model, q, qd, qdd);
+
+newConfig = @(x) configurationAddition(model,q,x);
+
+dtau_dqd_cs = complexStepJacobian(@(x) ID(model, q ,x ,qdd), qd);
+dtau_dq_cs = complexStepJacobian(@(x) ID(model, newConfig(x) ,qd ,qdd), zeros(model.NV,1) );
+
+
+checkValue('ID derivs', dtau_dq, dtau_dq_cs)
+checkValue('ID derivs', dtau_dqd, dtau_dqd_cs)
+
+
+
 
 
 function checkValue(name, v1, v2, tolerance)
