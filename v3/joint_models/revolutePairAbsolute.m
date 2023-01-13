@@ -4,7 +4,7 @@ classdef revolutePairAbsolute
     properties
         nv = 2
         nq = 2
-        axis
+        jointAxis
         XtreeInternal
         output_body = 2
         bodies = 2
@@ -16,11 +16,10 @@ classdef revolutePairAbsolute
             % two revolutes.
             
             
-            [XJ{1} , S1 ] = jcalc( ['R' obj.axis{1}], q(1) );
+            [XJ{1} , S1 ] = jcalc( ['R' obj.jointAxis{1}], q(1) );
+            [XJ{2}, S2 ] = jcalc( ['R' obj.jointAxis{2}], q(2) - q(1) );
             
-            [XJ{2}, S2 ] = jcalc( ['R' obj.axis{2}], q(2) - q(1) );
-            
-            X1p = XJ{1}*Xtree;
+            X1p = XJ{1}*Xtree(1:6,:);
             X21 = XJ{2}*obj.XtreeInternal;
             
             Xup(1:6,:) = X1p;

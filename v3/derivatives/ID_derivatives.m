@@ -20,18 +20,26 @@ a = {};
 for i = 1:model.NB
     
   vp = model.getParentVariable(i, v);
-  ap = model.getParentVariable(i, a);
+  ap = model.getParentVariable(i, a,-a_grav);
   
   
-  [Xup{i}, S{i}, Sd{i}, v{i}, derivs] = model.joint{i}.kinematics(model.Xtree{i}, q{i}, qd{i}, vp);
+  [Xup{i}, S{i}, Sd{i}, v{i}, derivs{i}] = model.joint{i}.kinematics(model.Xtree{i}, q{i}, qd{i}, vp);
 
   vp = Xup{i}*vp;
   ap = Xup{i}*ap;
   
   a{i}       = ap + S{i}*qdd{i} + Sd{i}*qd{i};
-  Psid{i}    = crm(vp)*S{i};
-  Psidd{i}   = crm(ap)*S{i} + crm(vp)*Psid{i} + derivs.Sdotqd_q; 
-  Upsilond{i} = crm(v{i})*S{i}  + Psid{i} + derivs.Sdotqd_qd;
+  
+  S_q = derivs{i}.S_q; % Tensor giving derivative of S w.r.t. q
+ 
+  alpha = contract( S_q, qd{i});
+  beta  = contract( S_q, qdd{i});
+  
+  Psid{i}    = crm(vp)*S{i} + alpha;
+  new_part = derivs{i}.Sdotqd_q + beta + crm(v{i})*alpha;
+  
+  Psidd{i}    = crm(ap)*S{i} + crm(vp)*Psid{i} + new_part; 
+  Upsilond{i} = Sd{i}  + Psid{i};
   
   IC{i} = I{i};
   
@@ -51,16 +59,16 @@ dtau_dqd  = repmat(0*q{1}(1), model.NV,model.NV);
 for i = model.NB:-1:1
   ii = model.vinds{i};
   
-  tmp1= IC{i}*S{i};
-  tmp2 = BC{i}*S{i}    + IC{i}*Upsilond{i};
+  tmp1= IC{i}*S{i}; 
+  tmp2 = BC{i}*S{i}    + IC{i}*Upsilond{i}; 
   tmp3 = BC{i}*Psid{i} + IC{i}*Psidd{i}     + icrf(f{i})*S{i}; 
-  tmp4 = BC{i}.'*S{i};
+  tmp4 = BC{i}.'*S{i}; 
   
   j = i;
   while j > 0
      jj = model.vinds{j};
-     dtau_dq(jj,ii)  = S{j}.'*tmp3;
      dtau_dq(ii,jj)  = tmp1.'*Psidd{j}+tmp4.'*Psid{j};
+     dtau_dq(jj,ii)  = S{j}.'*tmp3;
 
      dtau_dqd(jj,ii) = S{j}.'*tmp2;
      dtau_dqd(ii,jj) = tmp1.'*Upsilond{j}+tmp4.'*S{j};
@@ -73,6 +81,9 @@ for i = model.NB:-1:1
      end
      j = model.parent(j);
   end
+  
+  S_q = derivs{i}.S_q;
+  dtau_dq(ii,ii) = dtau_dq(ii,ii) + contractT( S_q, f{i})';
   
   if model.parent(i) > 0
      p = model.parent(i);
@@ -92,6 +103,22 @@ function M = myCell2Mat(model,S)
 %         M(:,model.vinds{i}) = S{i};
 %     end
 M = cell2mat(S);
+end
+
+function out = contract(S_q, vec)
+    out = zeros( size(S_q,1), size(S_q,3) );
+    
+    for i = 1:size(S_q,3)
+       out(:,i) =  S_q(:,:,i)*vec;
+    end
+end
+
+function out = contractT(S_q, vec)
+    out = zeros( size(S_q,2), size(S_q,3) );
+    
+    for i = 1:size(S_q,3)
+       out(:,i) =  S_q(:,:,i)'*vec;
+    end
 end
 
 

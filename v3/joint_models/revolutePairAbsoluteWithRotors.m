@@ -68,7 +68,8 @@ classdef revolutePairAbsoluteWithRotors
                         Sr1d*n1       z;
                         Sr2d*b1*gr2   Sr2d*n2;
                         X21*S1d       S2d
-                      ];              
+                      ];
+                
             end
             if nargout > 4
                 % Sdot (open dot) lower left corner = 
@@ -77,6 +78,9 @@ classdef revolutePairAbsoluteWithRotors
                 %  -S2 x X21 * S1 * qd1*qd2
                 
                 dX21_dq2 = -crm(S2)*X21;
+                
+                derivs.S_q = zeros(24,2,2);
+                derivs.S_q(19:24,1,2) = -crm(S2)* X21 * S1;
                 
                 derivs.Sdotqd_q  = zeros(24,2);
                 derivs.Sdotqd_qd = zeros(24,2);
