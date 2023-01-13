@@ -74,22 +74,22 @@ for i = model.NB:-1:1
      dtau_dqd(ii,jj) = tmp1.'*Upsilond{j}+tmp4.'*S{j};
      
      if model.parent(j) > 0
-        tmp1 = Xup{j}'*tmp1;
-        tmp2 = Xup{j}'*tmp2;
-        tmp3 = Xup{j}'*tmp3;
-        tmp4 = Xup{j}'*tmp4;
+        tmp1 = Xup{j}.'*tmp1;
+        tmp2 = Xup{j}.'*tmp2;
+        tmp3 = Xup{j}.'*tmp3;
+        tmp4 = Xup{j}.'*tmp4;
      end
      j = model.parent(j);
   end
   
   S_q = derivs{i}.S_q;
-  dtau_dq(ii,ii) = dtau_dq(ii,ii) + contractT( S_q, f{i})';
+  dtau_dq(ii,ii) = dtau_dq(ii,ii) + contractT( S_q, f{i}).';
   
   if model.parent(i) > 0
      p = model.parent(i);
-     IC{p} = IC{p} + Xup{i}'*IC{i}*Xup{i};
-     BC{p} = BC{p} + Xup{i}'*BC{i}*Xup{i};
-     f{p}  = f{p}  + Xup{i}'*f{i};
+     IC{p} = IC{p} + Xup{i}.'*IC{i}*Xup{i};
+     BC{p} = BC{p} + Xup{i}.'*BC{i}*Xup{i};
+     f{p}  = f{p}  + Xup{i}.'*f{i};
   end
 end
 
@@ -117,7 +117,7 @@ function out = contractT(S_q, vec)
     out = zeros( size(S_q,2), size(S_q,3) );
     
     for i = 1:size(S_q,3)
-       out(:,i) =  S_q(:,:,i)'*vec;
+       out(:,i) =  S_q(:,:,i).'*vec;
     end
 end
 
