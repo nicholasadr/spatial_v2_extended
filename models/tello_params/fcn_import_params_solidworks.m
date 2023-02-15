@@ -47,7 +47,7 @@ for kk = 1:nFiles
 
     % detect where inertia values are located
     iner_ = [];
-    startPattern = {'Ixx = ', 'Iyx = ', 'Izx = '};
+    startPattern = {'Lxx = ', 'Lyx = ', 'Lzx = '};
 
     for ii = 1:numel(startPattern)
         idx = startsWith(C,startPattern{ii});
