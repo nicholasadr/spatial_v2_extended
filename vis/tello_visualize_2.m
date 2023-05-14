@@ -2,29 +2,29 @@ function tello_visualize_2()
 % todo - optional: rotor visualization 
 
 %  visualize structural bodies only
-obj_filename{1} = '.\vis\torso.obj';
+obj_filename{1} = './vis/torso.obj';
 
-obj_filename{2} = '.\vis\hipclamp.obj';
-obj_filename{3} = '.\vis\gimbal.obj';
-obj_filename{4} = '.\vis\thigh.obj';
-obj_filename{5} = '.\vis\shin.obj';
-obj_filename{6} = '.\vis\foot.obj';
+obj_filename{2} = './vis/hipclamp.obj';
+obj_filename{3} = './vis/gimbal.obj';
+obj_filename{4} = './vis/thigh.obj';
+obj_filename{5} = './vis/shin.obj';
+obj_filename{6} = './vis/foot.obj';
 
-obj_filename{12} = '.\vis\hipclamp.obj';
-obj_filename{13} = '.\vis\gimbal.obj';
-obj_filename{14} = '.\vis\thigh.obj';
-obj_filename{15} = '.\vis\shin.obj';
-obj_filename{16} = '.\vis\foot.obj';
+obj_filename{12} = './vis/hipclamp.obj';
+obj_filename{13} = './vis/gimbal.obj';
+obj_filename{14} = './vis/thigh.obj';
+obj_filename{15} = './vis/shin.obj';
+obj_filename{16} = './vis/foot.obj';
 
-obj_filename{22} = '.\vis\spatial_4bar_top.obj';
-obj_filename{23} = '.\vis\spatial_4bar_top.obj';
-obj_filename{24} = '.\vis\carrier.obj';
-obj_filename{25} = '.\vis\hamstring.obj';
+obj_filename{22} = './vis/spatial_4bar_top.obj';
+obj_filename{23} = './vis/spatial_4bar_top.obj';
+obj_filename{24} = './vis/carrier.obj';
+obj_filename{25} = './vis/hamstring.obj';
 
-obj_filename{26} = '.\vis\spatial_4bar_top.obj';
-obj_filename{27} = '.\vis\spatial_4bar_top.obj';
-obj_filename{28} = '.\vis\carrier.obj';
-obj_filename{29} = '.\vis\hamstring.obj';
+obj_filename{26} = './vis/spatial_4bar_top.obj';
+obj_filename{27} = './vis/spatial_4bar_top.obj';
+obj_filename{28} = './vis/carrier.obj';
+obj_filename{29} = './vis/hamstring.obj';
 
 % read mesh files as vertices and faces
 for ii = [1, 2:6, 12:16, 22:29]
