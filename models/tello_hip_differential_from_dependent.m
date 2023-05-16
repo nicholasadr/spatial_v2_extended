@@ -3,6 +3,11 @@ function robot = tello_hip_differential_from_dependent(qd, qd_dot, qd_ddot)
 % (hip roll and hip pitch joints)
 % qd_dot: 2x1 vector of dependent joint velocities (actuators)
 % qd_ddot: 2x1 vector of dependent joint accelerations (actuators)
+% Example to run:
+% >> qd = [-0.5059 -0.1865]';
+% >> qd_dot = [-0.9651 0.4352]';
+% >> qd_ddot = [0.1075 0.2801]';
+% >> hipd = tello_hip_differential(qd, qd_dot, qd_ddot);
 import casadi.*
 
 % NOTE 1: Inertial parameters are stored in 
