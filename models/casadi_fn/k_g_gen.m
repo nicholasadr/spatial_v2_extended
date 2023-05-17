@@ -52,10 +52,9 @@ G = SX.zeros(4,2);
 G(1:2,1:2) = eye(2);
 G(3:end,1:2) = J_dp_2_dq_hip;
 
-G_qddot = G * qd_dot;
-G_ydot = G * y_dot;
-g = jtimes(G_qddot,qd,y_dot) + jtimes(G_ydot,y,y_dot);
-
+%G_qd_dot = G * qd_dot;
+G_y_dot = G * y_dot;
+g = jtimes(G_y_dot,qd,qd_dot) + jtimes(G_y_dot,y,y_dot);
 f2 = Function('g_gen',{y,qd,y_dot,qd_dot},{g});
 
 % to test:
@@ -68,7 +67,8 @@ f2 = Function('g_gen',{y,qd,y_dot,qd_dot},{g});
 % f2.generate('g_gen.cpp',opts);
 
 % code gen for matlab:
+% (on matlab)
 % opts = struct('mex', true);
 % f2.generate('g_gen.c',opts)
-% see https://web.casadi.org/docs/#casadi-s-external-function to generate
-% .so
+% (on unix : see https://web.casadi.org/docs/#casadi-s-external-function)
+% gcc -fPIC -shared g_gen.c -o g_gen.so

@@ -226,14 +226,6 @@ crfv(19:24,19:24) = crf(v_(19:24));
 f_ = I_*a_ + crfv*I_*v_;
 tau_ = S' * f_;
 
-%% debug
-%G3 = [A B];
-%G3_dot = [A_dot B_dot];
-%a1_ = S_single_joint{3}*G3_dot*y_dot; % [-0.2114; 0;0;0;0;0]
-%a2_ = S_ring(13:18,:)*y_dot; % [-0.2114; 0;0;0;0;0]
-%a3_ = G3_dot * y_dot; % -0.2114
-%a4_ = g(3); % 0.1075
-
 robot.NB = NB;
 robot.parent = parent;
 robot.jtype = jtype;
@@ -242,6 +234,7 @@ robot.XJ = XJ;
 robot.Xup = Xup;
 robot.S_single_joint = S_single_joint;
 robot.G = G;
+robot.g = g;
 robot.S = S;
 robot.S_ring = S_ring;
 robot.vJ = vJ;
