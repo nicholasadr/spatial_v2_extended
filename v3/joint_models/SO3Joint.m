@@ -15,6 +15,7 @@ classdef SO3Joint
                 Sd = crm(v)*S;
             end
             if nargout > 4
+                derivs.S_q = zeros(3,1,1);
                 derivs.Sdotqd_q = zeros(3,1);
                 derivs.Sdotqd_qd= zeros(3,1);
             end

@@ -33,6 +33,7 @@ classdef revoluteJointWithRotor
             end
             
             if nargout > 4
+                derivs.S_q = zeros(12,1,1);
                 derivs.Sdotqd_q = zeros(12,1);
                 derivs.Sdotqd_qd= zeros(12,1);
             end

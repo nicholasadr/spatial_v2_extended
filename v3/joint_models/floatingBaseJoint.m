@@ -16,6 +16,7 @@ classdef floatingBaseJoint
                 Sd = crm(v)*S;
             end
             if nargout > 4
+                derivs.S_q = zeros(6,1,1);
                 derivs.Sdotqd_q = zeros(6,1);
                 derivs.Sdotqd_qd= zeros(6,1);
             end

@@ -43,6 +43,7 @@ classdef revolutePairAbsolute
                 % So lower part of Sdot*qdot = 
                 %                   -crm(S2)*X21*S1*(qdot2 - qdot1)*qdot1
                 
+                error('S_q not yet implemented for revolutePairAbsolute');
                 derivs.Sdotqd_q = zeros(12,2);
                 derivs.Sdotqd_qd= zeros(12,2);
                 
