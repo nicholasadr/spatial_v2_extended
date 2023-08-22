@@ -15,7 +15,7 @@ extern "C" {
   #define _CASADI_NAMESPACE_CONCAT(NS, ID) NS ## ID
   #define CASADI_PREFIX(ID) CASADI_NAMESPACE_CONCAT(CODEGEN_PREFIX, ID)
 #else
-  #define CASADI_PREFIX(ID) y_dot_gen_ ## ID
+  #define CASADI_PREFIX(ID) gen_thd_IK_dql_to_dy_ ## ID
 #endif
 
 #include <math.h>
@@ -177,7 +177,7 @@ mxArray* casadi_to_mex(const casadi_int* sp, const casadi_real* x) {
 
 static const casadi_int casadi_s0[6] = {2, 1, 0, 2, 0, 1};
 
-/* IK_dependent_state_to_y_dot:(i0[2],i1[2])->(o0[2]) */
+/* thd_IK_vel:(i0[2],i1[2])->(o0[2]) */
 static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a2, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a3, a30, a31, a32, a4, a5, a6, a7, a8, a9;
   a0=2.2800000000000001e-02;
@@ -452,45 +452,45 @@ static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT int IK_dependent_state_to_y_dot(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem){
+CASADI_SYMBOL_EXPORT int thd_IK_vel(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem){
   return casadi_f0(arg, res, iw, w, mem);
 }
 
-CASADI_SYMBOL_EXPORT int IK_dependent_state_to_y_dot_alloc_mem(void) {
+CASADI_SYMBOL_EXPORT int thd_IK_vel_alloc_mem(void) {
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT int IK_dependent_state_to_y_dot_init_mem(int mem) {
+CASADI_SYMBOL_EXPORT int thd_IK_vel_init_mem(int mem) {
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT void IK_dependent_state_to_y_dot_free_mem(int mem) {
+CASADI_SYMBOL_EXPORT void thd_IK_vel_free_mem(int mem) {
 }
 
-CASADI_SYMBOL_EXPORT int IK_dependent_state_to_y_dot_checkout(void) {
+CASADI_SYMBOL_EXPORT int thd_IK_vel_checkout(void) {
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT void IK_dependent_state_to_y_dot_release(int mem) {
+CASADI_SYMBOL_EXPORT void thd_IK_vel_release(int mem) {
 }
 
-CASADI_SYMBOL_EXPORT void IK_dependent_state_to_y_dot_incref(void) {
+CASADI_SYMBOL_EXPORT void thd_IK_vel_incref(void) {
 }
 
-CASADI_SYMBOL_EXPORT void IK_dependent_state_to_y_dot_decref(void) {
+CASADI_SYMBOL_EXPORT void thd_IK_vel_decref(void) {
 }
 
-CASADI_SYMBOL_EXPORT casadi_int IK_dependent_state_to_y_dot_n_in(void) { return 2;}
+CASADI_SYMBOL_EXPORT casadi_int thd_IK_vel_n_in(void) { return 2;}
 
-CASADI_SYMBOL_EXPORT casadi_int IK_dependent_state_to_y_dot_n_out(void) { return 1;}
+CASADI_SYMBOL_EXPORT casadi_int thd_IK_vel_n_out(void) { return 1;}
 
-CASADI_SYMBOL_EXPORT casadi_real IK_dependent_state_to_y_dot_default_in(casadi_int i) {
+CASADI_SYMBOL_EXPORT casadi_real thd_IK_vel_default_in(casadi_int i) {
   switch (i) {
     default: return 0;
   }
 }
 
-CASADI_SYMBOL_EXPORT const char* IK_dependent_state_to_y_dot_name_in(casadi_int i) {
+CASADI_SYMBOL_EXPORT const char* thd_IK_vel_name_in(casadi_int i) {
   switch (i) {
     case 0: return "i0";
     case 1: return "i1";
@@ -498,14 +498,14 @@ CASADI_SYMBOL_EXPORT const char* IK_dependent_state_to_y_dot_name_in(casadi_int 
   }
 }
 
-CASADI_SYMBOL_EXPORT const char* IK_dependent_state_to_y_dot_name_out(casadi_int i) {
+CASADI_SYMBOL_EXPORT const char* thd_IK_vel_name_out(casadi_int i) {
   switch (i) {
     case 0: return "o0";
     default: return 0;
   }
 }
 
-CASADI_SYMBOL_EXPORT const casadi_int* IK_dependent_state_to_y_dot_sparsity_in(casadi_int i) {
+CASADI_SYMBOL_EXPORT const casadi_int* thd_IK_vel_sparsity_in(casadi_int i) {
   switch (i) {
     case 0: return casadi_s0;
     case 1: return casadi_s0;
@@ -513,14 +513,14 @@ CASADI_SYMBOL_EXPORT const casadi_int* IK_dependent_state_to_y_dot_sparsity_in(c
   }
 }
 
-CASADI_SYMBOL_EXPORT const casadi_int* IK_dependent_state_to_y_dot_sparsity_out(casadi_int i) {
+CASADI_SYMBOL_EXPORT const casadi_int* thd_IK_vel_sparsity_out(casadi_int i) {
   switch (i) {
     case 0: return casadi_s0;
     default: return 0;
   }
 }
 
-CASADI_SYMBOL_EXPORT int IK_dependent_state_to_y_dot_work(casadi_int *sz_arg, casadi_int* sz_res, casadi_int *sz_iw, casadi_int *sz_w) {
+CASADI_SYMBOL_EXPORT int thd_IK_vel_work(casadi_int *sz_arg, casadi_int* sz_res, casadi_int *sz_iw, casadi_int *sz_w) {
   if (sz_arg) *sz_arg = 2;
   if (sz_res) *sz_res = 1;
   if (sz_iw) *sz_iw = 0;
@@ -529,25 +529,25 @@ CASADI_SYMBOL_EXPORT int IK_dependent_state_to_y_dot_work(casadi_int *sz_arg, ca
 }
 
 #ifdef MATLAB_MEX_FILE
-void mex_IK_dependent_state_to_y_dot(int resc, mxArray *resv[], int argc, const mxArray *argv[]) {
+void mex_thd_IK_vel(int resc, mxArray *resv[], int argc, const mxArray *argv[]) {
   casadi_int i;
   int mem;
   casadi_real w[39];
   casadi_int *iw = 0;
   const casadi_real* arg[2] = {0};
   casadi_real* res[1] = {0};
-  if (argc>2) mexErrMsgIdAndTxt("Casadi:RuntimeError","Evaluation of \"IK_dependent_state_to_y_dot\" failed. Too many input arguments (%d, max 2)", argc);
-  if (resc>1) mexErrMsgIdAndTxt("Casadi:RuntimeError","Evaluation of \"IK_dependent_state_to_y_dot\" failed. Too many output arguments (%d, max 1)", resc);
+  if (argc>2) mexErrMsgIdAndTxt("Casadi:RuntimeError","Evaluation of \"thd_IK_vel\" failed. Too many input arguments (%d, max 2)", argc);
+  if (resc>1) mexErrMsgIdAndTxt("Casadi:RuntimeError","Evaluation of \"thd_IK_vel\" failed. Too many output arguments (%d, max 1)", resc);
   if (--argc>=0) arg[0] = casadi_from_mex(argv[0], w, casadi_s0, w+6);
   if (--argc>=0) arg[1] = casadi_from_mex(argv[1], w+2, casadi_s0, w+6);
   --resc;
   res[0] = w+4;
-  IK_dependent_state_to_y_dot_incref();
-  mem = IK_dependent_state_to_y_dot_checkout();
-  i = IK_dependent_state_to_y_dot(arg, res, iw, w+6, mem);
-  if (i) mexErrMsgIdAndTxt("Casadi:RuntimeError","Evaluation of \"IK_dependent_state_to_y_dot\" failed.");
-  IK_dependent_state_to_y_dot_release(mem);
-  IK_dependent_state_to_y_dot_decref();
+  thd_IK_vel_incref();
+  mem = thd_IK_vel_checkout();
+  i = thd_IK_vel(arg, res, iw, w+6, mem);
+  if (i) mexErrMsgIdAndTxt("Casadi:RuntimeError","Evaluation of \"thd_IK_vel\" failed.");
+  thd_IK_vel_release(mem);
+  thd_IK_vel_decref();
   if (res[0]) resv[0] = casadi_to_mex(casadi_s0, res[0]);
 }
 #endif
@@ -555,16 +555,16 @@ void mex_IK_dependent_state_to_y_dot(int resc, mxArray *resv[], int argc, const 
 
 #ifdef MATLAB_MEX_FILE
 void mexFunction(int resc, mxArray *resv[], int argc, const mxArray *argv[]) {
-  char buf[28];
+  char buf[11];
   int buf_ok = argc > 0 && !mxGetString(*argv, buf, sizeof(buf));
   if (!buf_ok) {
-    mex_IK_dependent_state_to_y_dot(resc, resv, argc, argv);
+    mex_thd_IK_vel(resc, resv, argc, argv);
     return;
-  } else if (strcmp(buf, "IK_dependent_state_to_y_dot")==0) {
-    mex_IK_dependent_state_to_y_dot(resc, resv, argc-1, argv+1);
+  } else if (strcmp(buf, "thd_IK_vel")==0) {
+    mex_thd_IK_vel(resc, resv, argc-1, argv+1);
     return;
   }
-  mexErrMsgTxt("First input should be a command string. Possible values: 'IK_dependent_state_to_y_dot'");
+  mexErrMsgTxt("First input should be a command string. Possible values: 'thd_IK_vel'");
 }
 #endif
 #ifdef __cplusplus

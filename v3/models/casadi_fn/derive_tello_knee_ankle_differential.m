@@ -73,7 +73,14 @@ function tkad = derive_tello_knee_ankle_differential_fn()
     tkad.g = Function('tkad_small_g', {qr,ql,qr_dot,ql_dot}, {g}); % CasADi function name is case insensitive
     tkad.K = Function('tkad_K',{qr,ql}, {K});
     tkad.k = Function('tkad_small_k', {qr,ql,qr_dot,ql_dot}, {k});
-    tkad.IK_pos = Function('tkad_IK_pos', {ql}, {ik_qr});
-    tkad.IK_vel = Function('tkad_IK_vel', {ql,ql_dot}, {ik_qr_dot});
+    tkad.IK_pos = Function('tkad_IK_pos', {ql}, {ik_y});
+    tkad.IK_vel = Function('tkad_IK_vel', {ql,ql_dot}, {ik_y_dot});
     tkad.jacobian = Function('tkad_jacobian', {qr,ql}, {G,K});
     tkad.bias = Function('tkad_bias', {qr,ql,qr_dot,ql_dot}, {g,k});
+
+    % Generate C code
+    opts = struct('mex', true);
+    tkad.G.generate('gen_tkad_G.c', opts);
+    tkad.G_dot.generate('gen_tkad_G_dot.c', opts);
+    tkad.IK_pos.generate('gen_tkad_IK_ql_to_y', opts);
+    tkad.IK_vel.generate('gen_tkad_IK_dql_to_dy', opts);

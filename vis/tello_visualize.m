@@ -2,19 +2,19 @@ function tello_visualize()
 % todo: rotor visualization 
 
 % only visualize structural bodies
-obj_filename{1} = './vis/torso.obj';
+obj_filename{1} = '../vis/torso.obj';
 
-obj_filename{2} = './vis/hipclamp.obj';
-obj_filename{3} = './vis/gimbal.obj';
-obj_filename{4} = './vis/thigh.obj';
-obj_filename{5} = './vis/shin.obj';
-obj_filename{6} = './vis/foot.obj';
+obj_filename{2} = '../vis/hipclamp.obj';
+obj_filename{3} = '../vis/gimbal.obj';
+obj_filename{4} = '../vis/thigh.obj';
+obj_filename{5} = '../vis/shin.obj';
+obj_filename{6} = '../vis/foot.obj';
 
-obj_filename{12} = './vis/hipclamp.obj';
-obj_filename{13} = './vis/gimbal.obj';
-obj_filename{14} = './vis/thigh.obj';
-obj_filename{15} = './vis/shin.obj';
-obj_filename{16} = './vis/foot.obj';
+obj_filename{12} = '../vis/hipclamp.obj';
+obj_filename{13} = '../vis/gimbal.obj';
+obj_filename{14} = '../vis/thigh.obj';
+obj_filename{15} = '../vis/shin.obj';
+obj_filename{16} = '../vis/foot.obj';
 
 % read mesh files as vertices and faces
 for ii = [1, 2:6, 12:16]
