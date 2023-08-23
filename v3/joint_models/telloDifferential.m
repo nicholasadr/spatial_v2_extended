@@ -104,5 +104,15 @@ classdef telloDifferential
 
             end
         end
+
+        function y_dot = get_minimal_coordinate_velocity(obj, ql, ql_dot)
+            % TODO (@nicholasadr): Hack to get minimal coordinate in ID and
+            %                      FDab.
+            y_dot_fn = casadi.external(...
+                            strcat(obj.type,'_IK_vel'),...
+                            strcat('./models/casadi_fn/gen_',...
+                                   obj.type,'_IK_dql_to_dy.so'));
+            y_dot = full( y_dot_fn(ql,ql_dot) );
+        end
     end
 end
