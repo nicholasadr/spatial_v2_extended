@@ -108,7 +108,7 @@ robot.Xtree = { eye(6), ...
 
 
 % import tello inertial pararmeters from solidworks-generated data files
-inertial = fcn_import_params_solidworks('./models/tello_params/inertial_*.txt');
+inertial = fcn_import_params_solidworks('../v3/models/tello_params/inertial_*.txt');
 
 
 % convert to rigid-body-inertia (rbi) 

@@ -15,7 +15,7 @@ model.parent = [0 1 2 3 1 5 6];
 gearRatio = 6;
 
 % import tello inertial pararmeters from solidworks-generated data files
-inertial = fcn_import_params_solidworks('./models/tello_params/inertial_*.txt');
+inertial = fcn_import_params_solidworks('tello_params/inertial_*.txt');
 
 model.joint{1} = floatingBaseJoint();
 model.Xtree{1} = eye(6);
