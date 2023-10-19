@@ -1,7 +1,7 @@
 clear
 %% Test with rotors
 disp('Absolute Pair Joints with Rotors')
-org_model = autoTree_rotor(4,1,.3);
+org_model = autoTree_rotor(10,1,.3);
 
 Xtree = org_model.Xtree;
 
@@ -240,16 +240,18 @@ checkValue('Y_Hqd' , Y_Hqd*a  , H*qd   ); % Indirect regressor
 checkValue('Y_CTqd', Y_CTqd*a , C'*qd  ); % Indirect regressor
 
 
-% J = BodyJacobian( model, q, 8, [zeros(6,18) eye(6)]);
-% Lambda_inv = J*(H\J');
-% F_spatial = [1 0 0 0 0 0]';
-% F_group = [zeros(18,1) ; F_spatial];
-% [qdd, lambda_inv_entry, sub, D] = applyTestForce(model,q,8,F_group);
-% qdd2 = H\(J'*F_spatial);
-% 
-% checkValue('Lambda_inv', F_spatial'*Lambda_inv*F_spatial,  lambda_inv_entry)
-% checkValue('qdd_test', qdd,  qdd2)
-% checkValue('invHFactor', sub*(D\(sub')), inv(H) ); 
+body_to_apply_force_to = 4;
+
+J = BodyJacobian( model, q, body_to_apply_force_to , [zeros(6,18) eye(6)]);
+Lambda_inv = J*(H\J');
+F_spatial = rand(6,1);
+F_group = [zeros(18,1) ; F_spatial];
+[qdd, lambda_inv_entry, sub, D] = applyTestForce(model,q,body_to_apply_force_to,F_group);
+qdd2 = H\(J'*F_spatial);
+
+checkValue('Lambda_inv', F_spatial'*Lambda_inv*F_spatial,  lambda_inv_entry)
+checkValue('qdd_test', qdd,  qdd2)
+checkValue('invHFactor', sub*(D\(sub')), inv(H) ); 
 % 
 % op_sp_xforms = {};
 % J = [];
@@ -279,7 +281,7 @@ dtau_dq_cs = complexStepJacobian(@(x) ID(model, newConfig(x) ,qd ,qdd), zeros(mo
 checkValue('ID derivs_q', dtau_dq, dtau_dq_cs)
 checkValue('ID derivs_qd', dtau_dqd, dtau_dqd_cs)
 
-dtau_dqd
+%dtau_dqd
 
 
 function checkValue(name, v1, v2, tolerance)
