@@ -25,6 +25,14 @@ classdef RBD_model
         subtree_vinds
         successor_vinds
         param_inds
+        obj
+        % bodies_with_obj_file_inds:
+        %   Stores the indices of individual body that has available obj file to visualize.
+        %   It has two rows and j column, where the first row is the
+        %   cluster index, the second row is the index of the body
+        %   within the cluster, and j is the number of bodies with obj
+        %   file.
+        bodies_with_obj_file_inds
     end
     
     methods
@@ -127,6 +135,21 @@ classdef RBD_model
                model.param_inds{i} = (model.N_RB*10+1): ((model.N_RB+model.joint{i}.bodies)*10);
                model.N_RB = model.N_RB + model.joint{i}.bodies;
             end
+
+            % 3D object file processing
+
+            % TODO (@nicholasadr): check that the string array count is equal to the
+            % number of bodies in each cluster
+
+            model.bodies_with_obj_file_inds = [];
+            for i = 1:model.NB
+                for j = 1:length(model.obj{i})
+                    if strlength(model.obj{i}(j))
+                        model.bodies_with_obj_file_inds = [model.bodies_with_obj_file_inds [i;j]];
+                    end
+                end
+            end
+
             model.NV = vi;
             model.NQ = qi;
         end
