@@ -15,7 +15,7 @@ q_fb = [1 0 0 0 0 0 0]';
 q = [q_fb; zeros(model.NQ,1)];
 
 if ~iscell(q)
-    [q] = confVecToCell(model,q);
+    [q] = model.confVecToCell(q);
 end
 
 for i = 1:model.NB
@@ -27,28 +27,28 @@ for i = 1:model.NB
   end
 end
 
-for i = 1:size(model.bodies_with_obj_file_inds,2)
-    b_jk = model.bodies_with_obj_file_inds(:,i);
-    cluster_idx = b_jk(1); % index of cluster
-    in_cluster_idx = b_jk(2); % index of body in cluster
+for cluster_idx = 1:model.NB
     if i == 1
-        X0_body = X0{i};
+      X0_body = X0{i};
     else
+      in_cluster_idx_list = find(cell2mat(model.obj_bool_mask{cluster_idx})); % indices of bodies in cluster with 3d obj
+      for in_cluster_idx = in_cluster_idx_list'
         row_inds = 6*(in_cluster_idx-1)+1 : 6*in_cluster_idx;
         X0_body = X0{cluster_idx}(row_inds, :);
-    end
 
-    T = inv(pluho(X0_body));
-    obj = readObj(model.obj{cluster_idx}(in_cluster_idx));
-    V = (T(1:3,1:3)*obj.v' + T(1:3,4) * ones(1,size(obj.v,1)))';
-    F = obj.f.v;
-    patch('vertices', V, ...
+        T = inv(pluho(X0_body));
+        obj = readObj(model.appearance.body{cluster_idx}{in_cluster_idx}{end});
+        V = (T(1:3,1:3)*obj.v' + T(1:3,4) * ones(1,size(obj.v,1)))';
+        F = obj.f.v;
+        patch('vertices', V, ...
           'faces', F, ...
           'LineStyle','-', ...
           'EdgeAlpha', .4, ...
           'EdgeColor', color(i, :)*.95, ...
           'FaceAlpha',.2, ...
           'FaceColor', color(i, :));
+      end
+    end 
 end
 
 axis equal;

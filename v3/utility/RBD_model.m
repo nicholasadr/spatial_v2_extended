@@ -25,14 +25,10 @@ classdef RBD_model
         subtree_vinds
         successor_vinds
         param_inds
-        obj
-        % bodies_with_obj_file_inds:
-        %   Stores the indices of individual body that has available obj file to visualize.
-        %   It has two rows and j column, where the first row is the
-        %   cluster index, the second row is the index of the body
-        %   within the cluster, and j is the number of bodies with obj
-        %   file.
-        bodies_with_obj_file_inds
+        %TODO(@nicholasadr): add description for below:
+        obj_bool_mask
+        get3dObjIdxInCluster
+        camera
     end
     
     methods
@@ -141,19 +137,38 @@ classdef RBD_model
             % TODO (@nicholasadr): check that the string array count is equal to the
             % number of bodies in each cluster
 
-            model.bodies_with_obj_file_inds = [];
+            if ~isprop( model, 'appearance' )
+              error( 'model has no appearance field' );
+            else
+              app = model.appearance;
+            end
+
+            if ~isfield( app, 'body' )
+              error( 'appearance must have a subfield ''body''' );
+            end
+
             for i = 1:model.NB
-                for j = 1:length(model.obj{i})
-                    if strlength(model.obj{i}(j))
-                        model.bodies_with_obj_file_inds = [model.bodies_with_obj_file_inds [i;j]];
-                    end
+              model.obj_bool_mask{i} = repmat({0},model.joint{i}.bodies,1);
+              for j = 1:model.joint{i}.bodies
+                if ~isempty(model.appearance.body{i}{j})
+                  model.obj_bool_mask{i}{j} = 1;
                 end
+              end
+
+              model.get3dObjIdxInCluster{i} = find(cell2mat(model.obj_bool_mask{i}));
             end
 
             model.NV = vi;
             model.NQ = qi;
         end
        
+        %%
+        %{
+        function cluster_bodies_w_3dobj_indcs = getBodyWith3dObj(model, cluster_idx)
+
+            cluster_bodies_w_3dobj_indcs = find(cell2mat(model.obj_bool_mask{cluster_idx}));
+        end
+        %}
         %%
         function q = normalizeConfVec(model,q)
 

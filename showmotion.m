@@ -107,11 +107,12 @@ if ndims(q_data) == 3 && size(q_data,2) == 1
   q_data = tmp;
 end
 
-if ndims(q_data) ~= 2 || size(q_data,1) ~= model.NB || ...
-      size(q_data,2) ~= length(t_data)
-  error( ['dimensions of third argument must be (np)x(nt) or ' ...
-	  '(np)x1x(nt) where np=model.NB and nt=length(t_data)'] );
-end
+%TODO(@nicholasadr): remove requirement that np=model.NB
+%if ndims(q_data) ~= 2 || size(q_data,1) ~= model.NB || ...
+%      size(q_data,2) ~= length(t_data)
+%  error( ['dimensions of third argument must be (np)x(nt) or ' ...
+%	  '(np)x1x(nt) where np=model.NB and nt=length(t_data)'] );
+%end
 
 ShoMoData.model = model;
 ShoMoData.t_data = t_data;
@@ -764,7 +765,7 @@ if nargin == 0				% main call
   
   X=[]; Y=[]; Z=[];
 
-  for h = ShoMoData.handles
+  for h = get_handle_list()
     [x,y,z] = bounds( h, eye(4) );
     X = minmax( [x,X] );
     Y = minmax( [y,Y] );
@@ -1861,13 +1862,75 @@ if isfield( app, 'base' )
 end
 
 for i = 1:model.NB
-  handles(i) = hgtransform( 'Parent', base );
   context.colour = defaultcolour(i);
-  add_drawing( app.body{i}, context, handles(i), i );
+  handles{i} = cell(model.joint{i}.bodies,1);
+  for b = 1:model.joint{i}.bodies
+    handles{i}{b} = hgtransform( 'Parent', base);
+  end
+  %bodies_w_3d_obj_idx = model.getBodyWith3dObj{i}
+  bodies_w_3d_obj_idx = model.get3dObjIdxInCluster{i};
+  add_cluster_drawing( app.body{i}, context, handles{i},...
+                       bodies_w_3d_obj_idx);
 end
 end
 
+function body = get_representative_cluster_handle( index )
 
+% If a body is required from a cluster, return the last body.
+% TODO (@nicholasadr): allow accepting based on index of body in cluster
+
+global ShoMoData;
+body = ShoMoData.handles{index}{end};
+end
+
+function handle_list = get_handle_list()
+
+% Returns ShoMoData.handles as list of individual rigid bodies
+
+h_idx = 0;
+global ShoMoData;
+for c=1:size(ShoMoData.handles,2)
+  for b=1:size(ShoMoData.handles{c})
+     handle_list(h_idx+1) = ShoMoData.handles{c}{b};
+  end
+end
+end
+
+function add_cluster_drawing( lists, context, handles, bodies_w_3d_obj_idx )
+
+n_rb = size(handles,1); % no of bodies in cluster
+
+dummy_index = 0; % TODO
+
+if n_rb==1 % only one body in a cluster
+  add_drawing( lists, context, handles{1}, dummy_index );
+else
+  for i=bodies_w_3d_obj_idx'
+    add_drawing( lists{i}, context, handles{i}, dummy_index );
+  end
+end
+end
+
+function h = obj_3d( parent, obj, colour )
+
+% 3D_OBJ  make a patch surface of the 3D object file
+% h=3d_obj(parent,obj,colour) creates the 3D obj patch having the specified parent,
+% coordinates and colour, and returns its handle. Colour is an RGB colour
+% vector.
+
+h = hggroup( 'Parent', parent );
+
+for i = 1:6
+  patch( 'Parent', h, ...
+	 'Vertices', obj.v, ...
+	 'Faces', obj.f.v, ...
+     'LineStyle','-', ...
+     'EdgeAlpha', .4, ...
+	 'EdgeColor', colour*.95, ...
+	 'FaceAlpha', .2, ...
+     'FaceColor', colour );
+end
+end
 
 function  add_drawing( list, context, handle, index )
 
@@ -1883,7 +1946,7 @@ function  add_drawing( list, context, handle, index )
 i = 1;
 N = length(list);
 
-one_arg = { 'box', 'line', 'triangles', 'colour', 'facets', 'vertices' };
+one_arg = { '3dobj', 'box', 'line', 'triangles', 'colour', 'facets', 'vertices' };
 two_args = { 'cyl', 'sphere', 'tiles' };
 command_list = [ one_arg, two_args ];
 
@@ -1920,13 +1983,20 @@ while i <= N
     end
   end
   
+  %TODO(@nicholasadr): modify and uncomment below
+  %{
   if ~isnumeric(arg1) || nargs == 2 && ~isnumeric(arg2)
     error( 'argument(s) of command ''%s'' must be numeric, %s', ...
 	   cmd, location(i) );
   end
+  %}
   
   switch cmd
     
+    case '3dobj'
+      obj = readObj(arg1);
+      obj_3d(handle, obj, context.colour);
+
     case 'box'
       try
 	box( handle, arg1, context.colour(1,:) );
@@ -2475,7 +2545,44 @@ end
 
 
 %----------
+%TODO(@nicholasadr): Had to introduce this function here since model
+%is a struct that does not accept function
+function [q_cell, v_cell, vd_cell, vd2_cell] = confVecToCell(q,v,vd, vd2)
+    global ShoMoData;
+    
+    model = ShoMoData.model;
+    
+    qj = 0;
+    vj = 0;
 
+    q_cell = cell(model.NB,size(q,2));
+    if nargin > 2
+        v_cell = cell(model.NB,size(v,2));
+    end
+    if nargin > 3
+        vd_cell = cell(model.NB,size(vd,2));
+    end
+    if nargin > 4
+        vd2_cell = cell(model.NB,size(vd2,2));
+    end
+
+    for i = 1:model.NB
+
+        q_cell{i} = q(qj+1 : qj+model.joint{i}.nq,: );
+        if nargin > 2
+            v_cell{i} = v( vj+1 : vj+model.joint{i}.nv,: );
+        end
+        if nargin > 3
+            vd_cell{i} = vd( vj+1 : vj+model.joint{i}.nv,: );
+        end
+        if nargin > 4
+            vd2_cell{i} = vd2( vj+1 : vj+model.joint{i}.nv,: );
+        end
+
+        qj = qj+model.joint{i}.nq;
+        vj = vj+model.joint{i}.nv;
+    end
+end
 
 function  reposition( q )
 
@@ -2494,21 +2601,49 @@ function  reposition( q )
   model = ShoMoData.model;
   handles = ShoMoData.handles;
 
-  for i = 1:model.NB
-    XJ = jcalc( model.jtype{i}, q(i) );
-    Xa{i} = XJ * model.Xtree{i};
-    if model.parent(i) ~= 0
-      Xa{i} = Xa{i} * Xa{model.parent(i)};
+  %TODO(@nicholasadr): create special function for forward kinematics
+  % and include confVecToCell there?
+  if ~iscell(q)
+    [q] = confVecToCell(q);
+  end
+  if model.N_RB>model.NB % detect cluster arrangement
+    for i = 1:model.NB
+      [Xup{i}, S{i}] = model.joint{i}.kinematics(model.Xtree{i}, q{i});
+      if model.parent(i) == 0
+        X0{i} = Xup{i};
+        X0_body = X0{i};
+        Tdisp = inv(pluho(X0{i}));
+        set( handles{i}{1}, 'matrix', Tdisp);
+        b = 1;
+      else
+        X0{i} = Xup{i} * X0{model.parent(i)};
+        for b = 1:model.joint{i}.bodies
+          row_inds = 6*(b-1)+1 : 6*b;
+          X0_body = X0{i}(row_inds, :);
+          Tdisp = inv(pluho(X0_body));
+          set( handles{i}{b}, 'matrix', Tdisp);
+        end
+      end
     end
-    if size(Xa{i},1) == 3		% Xa{i} is a planar coordinate xform
-      [theta,r] = plnr(Xa{i});
-      X = rotz(theta) * xlt([r;0]);
-      T = pluho(X);
-    else
-      T = pluho(Xa{i});
+  else
+    % TODO(@nicholasadr): remove? and assume only accept generalized joint?
+    error("This class is being tested on generalized joint system only")
+    for i = 1:model.NB
+      XJ = jcalc( model.jtype{i}, q(i) );
+      Xa{i} = XJ * model.Xtree{i};
+      if model.parent(i) ~= 0
+        Xa{i} = Xa{i} * Xa{model.parent(i)};
+      end
+      if size(Xa{i},1) == 3		% Xa{i} is a planar coordinate xform
+        [theta,r] = plnr(Xa{i});
+        X = rotz(theta) * xlt([r;0]);
+        T = pluho(X);
+      else
+        T = pluho(Xa{i});
+      end
+      Tdisp = inv(T);		% displacement is inverse of coord xform
+      set( handles(i), 'matrix', Tdisp );
     end
-    Tdisp = inv(T);		% displacement is inverse of coord xform
-    set( handles(i), 'matrix', Tdisp );
   end
 end
 
@@ -3552,7 +3687,7 @@ function  viewreset
   if cam.trackbody == 0
     trackpos = cam.trackpoint;
   else
-    h = ShoMoData.handles(cam.trackbody);
+    h = get_representative_cluster_handle(cam.trackbody);
     T = get( h, 'Matrix' );
     trackpos = [cam.trackpoint 1] * T';
     trackpos = trackpos(1:3);
@@ -3646,7 +3781,7 @@ function  viewtrack
     return
   end
 
-  h = ShoMoData.handles(cam.trackbody);
+  h = get_representative_cluster_handle(cam.trackbody);
   T = get( h, 'Matrix' );
   newpos = [cam.trackpoint 1] * T';
   ShoMoData.camera.oldtrackpos = newpos(1:3);
