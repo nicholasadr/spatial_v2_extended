@@ -1,4 +1,5 @@
 function model = mit_humanoid_model(gravity)
+    % x forward, y left, z up
 
 import casadi.*
 
@@ -15,7 +16,7 @@ model.NB = 17;
 %leg: [hiprz, hiprz_rotor], [hiprx, hiprx_rotor], [hipry, hipry_rotor], [knee, knee_rotor, ankle, ankle_rotor]
 % arm: [shoulderRy, shoulderRy_rotor], [shoulderRx, shoulderRx_rotor], [shoulderRz, shoulderRz_rotor], [elbow, elbow_rotor]
 model.parent = [0 1 2 3 4 1 6 7 8 1 10 11 12 1 14 15 16];
-mode.appearance.base = {'tiles', [-10 10; -10 10; 0 0], 0.1,'colour',[0.047 0.137 0.25],'box',[-0.07 0 -0.01; 0.15 0.05 0.01]};
+%model.appearance.base = {'tiles', [-10 10; -10 10; 0 0], 0.1,'colour',[0.047 0.137 0.25],'box',[-0.07 0 -0.01; 0.15 0.05 0.01]};
 
 % Link rotational inertia
 torsoRotInertia = [0.172699, 0.001419, 0.004023;...
@@ -137,22 +138,34 @@ shoulderRzGearRatio = 6.0;
 shoulderRyGearRatio = 6.0;
 elbowGearRatio = 9.0;
 
+% parameters for showmotion visualization
+torso_length = 0.1;
+torso_width = 0.164;
+torso_height = 0.30392;
+leg_rad = 0.02;
+footToeLength = 0.1;
+footHeelLength = 0.05;
+footHeight = 0.041;
+lowerArmLength = 0.27;
 
 % 1st cluster: torso
 model.joint{1} = floatingBaseJoint();
 model.Xtree{1} = eye(6);
 model.I{1} = mcI(torsoMass, torsoCOM, torsoRotInertia);
-%model.appearance.body{1} = {{'3dobj',"obj/tello/torso.obj"}};
+%model.appearance.body{1} = {{'3dobj','obj/mit_humanoid/torso.obj'}};
+model.appearance.body{1} = {'colour',[232, 127, 35]./255,...
+    'box', [-0.5*torso_length -0.75*torso_width -0.15*torso_height;...
+    0.5*torso_length 0.75*torso_width 1.0*torso_height]};
 
 idx = 1;
-for legID = ["left","right"]
+for legID = ["right","left"]
 
   % hipRz
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = hipRzGearRatio;
-  model.joint{idx}.rotorAxis = 'Rz';
-  model.joint{idx}.jointAxis = 'Rz';
+  model.joint{idx}.rotorAxis = 'z';
+  model.joint{idx}.jointAxis = 'z';
   R_hipZ = roty(hipRzPitch);
   R_hipZ = R_hipZ(1:3,1:3);
   model.Xtree{idx}(1:6,:) = plux(R_hipZ, signedVector(hipRzLocation, legID));
@@ -162,13 +175,21 @@ for legID = ["left","right"]
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaZ),...
 					     legID);
   %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/hipRz.obj'},{}};
+  cyl1 = [0 0 0.75*leg_rad;...
+        0 0 -0.75*leg_rad];
+  cyl2 = [0 0 0;...
+          signedVector(hipRxLocation, legID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[18, 6, 186]./255,...
+        'cyl', cyl1, 1.65*leg_rad,...
+        'cyl', cyl2, 1.5*leg_rad}, {}};
 
   % hipRx
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = hipRxGearRatio;
-  model.joint{idx}.rotorAxis = 'Rx';
-  model.joint{idx}.jointAxis = 'Rx';
+  model.joint{idx}.rotorAxis = 'x';
+  model.joint{idx}.jointAxis = 'x';
   R_hipX = roty(hipRxPitch);
   R_hipX = R_hipX(1:3,1:3);
   model.Xtree{idx}(1:6,:) = plux(R_hipX, signedVector(hipRxLocation, legID));
@@ -178,13 +199,21 @@ for legID = ["left","right"]
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaX),...
 					     legID);
   %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/hipRx.obj'},{}};
+  cyl1 = [0.5*leg_rad 0 0;...
+        -1.5*leg_rad 0 0];
+  cyl2 = [0 0 0;...
+        signedVector(hipRyLocation, legID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[18, 6, 186]./255,...
+        'cyl', cyl1, 2*leg_rad,...
+        'cyl', cyl2, leg_rad}, {}};
 
   % hipRy
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = hipRyGearRatio;
-  model.joint{idx}.rotorAxis = 'Ry';
-  model.joint{idx}.jointAxis = 'Ry';
+  model.joint{idx}.rotorAxis = 'y';
+  model.joint{idx}.jointAxis = 'y';
   R_hipY = roty(hipRyPitch);
   R_hipY = R_hipY(1:3,1:3);
   model.Xtree{idx}(1:6,:) = plux(R_hipY, signedVector(hipRyLocation, legID));
@@ -193,16 +222,24 @@ for legID = ["left","right"]
 					   legID);
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, largeRotorCOM, smallRotorRotInertiaY),...
 					     legID);
-  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/hipRy.obj'},{}};
+  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/thigh.obj'},{}};
+  cyl1 = [0 1.5*leg_rad 0;...
+        0 -1.5*leg_rad 0];
+  cyl2 = [0 0 0;...
+        signedVector(kneeLocation, legID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[18, 6, 186]./255,...
+        'cyl', cyl1, 3*leg_rad,...
+        'cyl', cyl2, leg_rad}, {}};
 
   % knee-ankle
   idx = idx + 1;
   model.joint{idx} = revolutePairAbsoluteWithRotors();
   model.joint{idx}.gearRatio = {kneeGearRatio, ankleGearRatio};
   model.joint{idx}.beltRatio = {kneeBeltRatio; ankleBeltRatio}; %TODO(@nicholasadr): why is this not a scalar?
-  model.joint{idx}.rotorAxis = {'Ry','Ry'};
-  model.joint{idx}.jointAxis = {'Ry','Ry'};
-  I3 = ones(3,3);
+  model.joint{idx}.rotorAxis = {'y','y'};
+  model.joint{idx}.jointAxis = {'y','y'};
+  I3 = eye(3);
   model.joint{idx}.XtreeInternal = plux(I3, signedVector(ankleLocation, legID)); % from first link to second link;
   model.Xtree{idx}(1:6,:) = plux(I3, signedVector(kneeLocation, legID)); % from predecessor to first link
   model.Xtree{idx}(7:12,:) = plux(I3, signedVector(kneeRotorLocation, legID)); % from predecessor to first rotor
@@ -211,60 +248,109 @@ for legID = ["left","right"]
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, largeRotorCOM, largeRotorRotInertiaY), legID); % first rotor
   model.I{idx}(13:18,13:18) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaY), legID); % second rotor
   model.I{idx}(19:24,19:24) = signedInertia(mcI(ankleMass, ankleCOM, ankleRotInertia), legID); % second link (foot)
-  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/knee.obj'},{},{},...
-  %				 {'3dobj','obj/mit_humanoid/ankle.obj'}};
-
+  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/shank.obj'},{},{},...
+  %				 {'3dobj','obj/mit_humanoid/foot.obj'}};
+  kcyl1 = [0 1.25*leg_rad 0;...
+          0 -1.25*leg_rad 0];
+  kcyl2 = [0 0 0;...
+          signedVector(ankleLocation, legID)'];
+  acyl1 = [0 0.5*leg_rad 0;...
+           0 -0.5*leg_rad 0];
+  acyl2 = [0 0 0;...
+        signedVector([footToeLength; 0; -footHeight], legID)'];
+  acyl3 = [0 0 0;...
+        signedVector([-footHeelLength; 0; -footHeight], legID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[203, 121, 247]./255,...
+        'cyl', kcyl1, 1.5*leg_rad,...
+        'cyl', kcyl2, leg_rad}, {}, {},...
+        {'colour',[18, 6, 186]./255,...
+        'cyl', acyl1, 0.8*leg_rad,...
+        'cyl', acyl2, 0.5*leg_rad,...
+        'cyl', acyl3, 0.5*leg_rad}};
 end
 
-for armID = ["left","right"]
+for armID = ["right","left"]
 
   % shoulderRy 
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = shoulderRyGearRatio;
-  model.joint{idx}.rotorAxis = 'Ry';
-  model.joint{idx}.jointAxis = 'Ry';
+  model.joint{idx}.rotorAxis = 'y';
+  model.joint{idx}.jointAxis = 'y';
   model.Xtree{idx}(1:6,:) = plux(I3, signedVector(shoulderRyLocation, armID));
   model.Xtree{idx}(7:12,:) = plux(I3, signedVector(shoulderRyRotorLocation, armID));
   model.I{idx}(1:6,1:6) = signedInertia(mcI(shoulderRyMass, shoulderRyCOM, shoulderRyRotInertia), armID);
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaY), armID);
-  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/shoulderRy.obj'},{}};
+  %model.appearance.body{idx} = {{},{}};
+  cyl1 = [0 3*leg_rad 0;...
+        0 -3*leg_rad 0];
+  cyl2 = [0 0 0;...
+        signedVector(shoulderRxLocation, armID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[225, 225, 227]./255,...
+        'cyl', cyl1, 1.35*leg_rad,...
+        'cyl', cyl2, leg_rad}, {}};
 
   % shoulderRx
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = shoulderRxGearRatio;
-  model.joint{idx}.rotorAxis = 'Rx';
-  model.joint{idx}.jointAxis = 'Rx';
+  model.joint{idx}.rotorAxis = 'x';
+  model.joint{idx}.jointAxis = 'x';
   model.Xtree{idx}(1:6,:) = plux(I3, signedVector(shoulderRxLocation, armID));
   model.Xtree{idx}(7:12,:) = plux(I3, signedVector(shoulderRxRotorLocation, armID));
   model.I{idx}(1:6,1:6) = signedInertia(mcI(shoulderRxMass, shoulderRxCOM, shoulderRxRotInertia), armID);
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaX), armID);
   %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/shoulderRx.obj'},{}};
+  cyl1 = [0.75*leg_rad 0 0;...
+        -0.75*leg_rad 0 0];
+  cyl2 = [0 0 0;...
+        signedVector(shoulderRzLocation, armID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[225, 225, 227]./255,...
+        'cyl', cyl1, 2.5*leg_rad,...
+        'cyl', cyl2, leg_rad}, {}};
 
   % shoulderRz
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = shoulderRzGearRatio;
-  model.joint{idx}.rotorAxis = 'Rz';
-  model.joint{idx}.jointAxis = 'Rz';
+  model.joint{idx}.rotorAxis = 'z';
+  model.joint{idx}.jointAxis = 'z';
   model.Xtree{idx}(1:6,:) = plux(I3, signedVector(shoulderRzLocation, armID));
   model.Xtree{idx}(7:12,:) = plux(I3, signedVector(shoulderRzRotorLocation, armID));
   model.I{idx}(1:6,1:6) = signedInertia(mcI(shoulderRzMass, shoulderRzCOM, shoulderRzRotInertia), armID);
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaZ), armID);
-  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/shoulderRz.obj'},{}};
+  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/upperArm.obj'},{}};
+  cyl1 = [0 0 0.75*leg_rad;...
+        0 0 -0.75*leg_rad];
+  cyl2 = [0 0 0;...
+        signedVector(elbowLocation, armID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[225, 225, 227]./255,...
+        'cyl', cyl1, 1.65*leg_rad,...
+        'cyl', cyl2, leg_rad}, {}};
 
   % elbow
   idx = idx + 1;
   model.joint{idx} = revoluteJointWithRotor();
   model.joint{idx}.gearRatio = elbowGearRatio;
-  model.joint{idx}.rotorAxis = 'Ry';
-  model.joint{idx}.jointAxis = 'Ry';
+  model.joint{idx}.rotorAxis = 'y';
+  model.joint{idx}.jointAxis = 'y';
   model.Xtree{idx}(1:6,:) = plux(I3, signedVector(elbowLocation, armID));
   model.Xtree{idx}(7:12,:) = plux(I3, signedVector(elbowRotorLocation, armID));
   model.I{idx}(1:6,1:6) = signedInertia(mcI(elbowMass, elbowCOM, elbowRotInertia), armID);
   model.I{idx}(7:12,7:12) = signedInertia(mcI(rotorMass, smallRotorCOM, smallRotorRotInertiaY), armID);
-  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/elbow.obj'},{}};
+  %model.appearance.body{idx} = {{'3dobj','obj/mit_humanoid/foreArm.obj'},{}};
+  cyl1 = [0 0.75*leg_rad 0;...
+        0 -0.75*leg_rad 0];
+  cyl2 = [0 0 0;...
+        signedVector([0; 0; -lowerArmLength], armID)'];
+  model.appearance.body{idx} = ...
+        {{'colour',[225, 225, 227]./255,...
+        'cyl', cyl1, 1.15*leg_rad,...
+        'cyl', cyl2, leg_rad}, {}};
 
 end
 
@@ -288,7 +374,7 @@ model = model.postProcessModel();
     Ibar = inertia(1:3,1:3);
     m = inertia(6,6);   
     P = zeros(4,4);
-    P(1:3,1:3) = 0.5 * trace(Ibar) * ones(3,3) - Ibar;
+    P(1:3,1:3) = 0.5 * trace(Ibar) * eye(3) - Ibar;
     P(1:3,4) = h;
     P(4,1:3) = h';
     P(4,4) = m;
@@ -297,9 +383,9 @@ model = model.postProcessModel();
   function signedv = signedVector(v, side)
     assert(size(v,1)==3 && size(v,2)==1);
     switch side
-      case 'right' % right
+      case 'right'
         signedv = v;
-      case 'left' % left
+      case 'left'
         signedv = [v(1); -v(2); v(3)];
     end
   end
@@ -307,11 +393,11 @@ model = model.postProcessModel();
   function signedSpatialInertia = signedInertia(spatialInertia, side)
     assert(size(spatialInertia,1)==6 && size(spatialInertia,2)==6);
     switch side
-      case 'right' % right
+      case 'right'
         % flip spatialInertia along Y axis
         % 1) get pseudo inertia
         P = getPseudoInertia(spatialInertia);
-        X = ones(4,4);
+        X = eye(4);
         X(2,2) = -1;
         P = X * P * X;
         % construct signedSpatialInertia from pseudo inertia
@@ -319,13 +405,13 @@ model = model.postProcessModel();
         m = P(4,4);
         h = P(1:3, 4);
         E = P(1:3, 1:3);
-        Ibar = trace(E) * ones(3,3) - E;
+        Ibar = trace(E) * eye(3) - E;
         I(1:3,1:3) = Ibar;
         I(1:3,4:6) = vectorToSkewMat(h);
         I(4:6,1:3) = vectorToSkewMat(h)';
-        I(4:6,4:6) = m * ones(3,3);
+        I(4:6,4:6) = m * eye(3);
         signedSpatialInertia = I;
-      case 'left' % left
+      case 'left'
         signedSpatialInertia = spatialInertia;
     end
   end
