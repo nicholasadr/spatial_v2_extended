@@ -16,6 +16,8 @@ if length(v(:)) == 6 && size(v,2) == 1
 	      v(6)  0    -v(4)   v(3)  0    -v(1) ;
 	     -v(5)  v(4)  0     -v(2)  v(1)  0 ];
 elseif mod( length(v(:)),6) == 0 && size(v,2) == 1
+    %TODO(@nicholasadr): hack to allow symbolic var
+    vcross = casadi.SX.zeros(size(v,1),size(v,1));
     i = 1;
     while i < length(v(:))
         ii = i:i+5;

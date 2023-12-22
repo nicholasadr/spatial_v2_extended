@@ -1891,7 +1891,8 @@ h_idx = 0;
 global ShoMoData;
 for c=1:size(ShoMoData.handles,2)
   for b=1:size(ShoMoData.handles{c})
-     handle_list(h_idx+1) = ShoMoData.handles{c}{b};
+     h_idx = h_idx + 1;
+     handle_list(h_idx) = ShoMoData.handles{c}{b};
   end
 end
 end
